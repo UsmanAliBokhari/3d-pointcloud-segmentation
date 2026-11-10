@@ -12,6 +12,19 @@ Computer Vision course project, Vrije Universiteit Brussel, 2026–27. Repositor
 | P2 | Jana _(surname)_ | _email_ |
 | P3 | Divi _(surname)_ | _email_ |
 
+## Team: first-time setup (do this once)
+
+```bash
+git clone https://github.com/UsmanAliBokhari/3d-pointcloud-segmentation.git
+cd 3d-pointcloud-segmentation
+git config user.name "Jana Peeters"   # ⚠️ IMPORTANT: must CONTAIN your team name (Usman / Jana / Divi)
+bash install_MAC.sh                   # Linux: bash install_Linux.sh  (run it INSIDE the clone)
+source .venv/bin/activate
+jupyter lab notebooks/project.ipynb   # or open the folder in VS Code; kernel: .venv / "Python (cv-repro)"
+```
+
+> **Why the git name matters:** the notebook detects who you are from `git config user.name`, so the status board can show *your* 7 functions. Check yours with `git config user.name`. If it doesn't contain your team name, set it as above (it applies to this repo only).
+
 **New to the project? Read [`docs/PROJECT_GUIDE.md`](docs/PROJECT_GUIDE.md) first.** It explains the paper and every computer vision concept from scratch, the work split, the timeline, and the git workflow.
 
 ## What it does

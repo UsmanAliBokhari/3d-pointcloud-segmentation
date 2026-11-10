@@ -26,10 +26,13 @@
 ```bash
 git clone https://github.com/UsmanAliBokhari/3d-pointcloud-segmentation.git
 cd 3d-pointcloud-segmentation
-bash install_MAC.sh          # or: bash install_Linux.sh
+git config user.name "Jana Peeters"      # ⚠️ must CONTAIN your team name: Usman / Jana / Divi
+bash install_MAC.sh          # or: bash install_Linux.sh (run INSIDE the clone)
 source .venv/bin/activate
 jupyter lab notebooks/project.ipynb      # kernel "Python (cv-repro)" -> Run All Cells
 ```
+
+> ⚠️ **Don't skip the `git config user.name` line.** The notebook finds out who you are from your git name (`ME` in the first cell stays empty), and the "my functions" board depends on it. Check with `git config user.name`.
 
 **All work happens in `notebooks/project.ipynb`.** It contains all 21 functions in pipeline order. Each function has an explanation, a code cell and a test cell. Your job: find your 7 functions (the status board at the top lists them with your name), replace `raise NotImplementedError` with your code, and run the test cell until it says `✅ PASS`. Then save, commit and push.
 
