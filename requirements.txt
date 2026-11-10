@@ -1,0 +1,15 @@
+# Tested with Python 3.10-3.12 on macOS (Apple Silicon/Intel) and Linux.
+# Before submitting: replace these ranges by the exact versions you used
+#   (pip freeze | grep -iE "numpy|scipy|scikit|pandas|matplotlib|plyfile|pyyaml")
+numpy>=1.24,<3
+scipy>=1.10
+scikit-learn>=1.3
+pandas>=2.0
+matplotlib>=3.7
+plyfile>=1.0
+pyyaml>=6.0
+# development only (notebook + git hygiene)
+jupyterlab>=4.0
+ipykernel>=6.0
+nbstripout>=0.6
+nbdime>=4.0

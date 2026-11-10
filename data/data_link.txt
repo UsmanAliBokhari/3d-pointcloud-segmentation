@@ -1,0 +1,4 @@
+Paris-rue-Madame (too large to include, ~20 M points):
+http://cmm.mines-paristech.fr/Projects/TerraMobilita/rueMadame_database.zip
+Dataset page: https://people.cmm.minesparis.psl.eu/users/serna/rueMadameDataset.html
+Automatic download + extraction: bash data/download.sh   (details: data/README-data.txt)

@@ -1,0 +1,4 @@
+# notebooks: strip outputs on commit (nbstripout) + notebook-aware diff/merge (nbdime)
+*.ipynb filter=nbstripout
+*.ipynb diff=jupyternotebook
+*.ipynb merge=jupyternotebook

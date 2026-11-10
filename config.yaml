@@ -1,0 +1,32 @@
+# All experiment settings. Paper values unless marked "our choice".
+seed: 42
+
+# Who is P1 / P2 / P3. Shown in the status board and dummy warnings.
+# (The notebook's first cell can override this for one session.)
+team:
+  P1: Usman
+  P2: Jana
+  P3: Divi
+
+data_files: [GT_Madame1_2.ply, GT_Madame1_3.ply]
+# raw dataset class id -> our label (CLASS_NAMES order: facade, ground, cars, motorcycles,
+# traffic_signs, pedestrians). Unlisted ids are ignored (-1). Source: Serna et al. 2014.
+class_map: {1: 0, 2: 1, 4: 2, 10: 3, 14: 4, 9: 5}
+max_points: null            # e.g. 2000000 for quick laptop runs; null = all points
+
+# Section 3.1: neighbourhood approximation
+base_voxel: 0.025           # 2.5 cm
+n_levels: 9                 # 0.025 ... 6.4 m
+factor: 2.0
+k: 10
+
+# Height features: cylinder radius = cyl_radius_factor * voxel size (our choice; not in paper)
+cyl_radius_factor: 3.0
+
+# Sections 3.3 / 4: training
+n_train_per_class: 1000
+rf_grid:
+  n_estimators: [25, 50, 100]
+  max_depth: [10, 20, 30]
+cv_folds: 5
+chunk_size: 200000

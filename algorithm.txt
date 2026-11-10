@@ -1,0 +1,54 @@
+Pseudocode: Fast semantic segmentation of 3D point clouds (Hackel et al., 2016)
+DRAFT: each team member checks and polishes the part matching their functions.
+Parameters: v0 = 0.025 m, L = 9 levels, factor 2, k = 10, r_s = 3 * voxel(s), 1000 samples/class
+
+Algorithm 1  Build multi-scale pyramid                                     (notebook stage 1, P1)
+ 1: procedure BuildPyramid(P)                         # P: original points, N x 3
+ 2:     Q <- P
+ 3:     for s = 0 to L-1 do
+ 4:         v_s <- v0 * 2^s                           # 2.5 cm ... 6.4 m
+ 5:         Q <- VoxelDownsample(Q, v_s)              # repeated downsampling
+ 6:         T_s <- KDTree(Q);  T2_s <- KDTree(Q.xy)   # 3D for kNN, 2D for cylinders
+ 7:         Level_s <- (v_s, Q, T_s, T2_s)
+ 8:     return [Level_0 ... Level_{L-1}]
+ 9:
+10: procedure VoxelDownsample(P, v)
+11:     for each point p in P: key(p) <- floor(p / v)            # integer voxel index
+12:     for each distinct key: output mean of all points with that key (centroid)
+
+Algorithm 2  Features of one point p                                (notebook stage 2, P1/P2/P3)
+ 1: procedure PointFeatures(p, pyramid)
+ 2:     f <- []
+ 3:     for s = 0 to L-1 do
+ 4:         N <- KNN(T_s, p, k)                       # k nearest centroids of level s    (P2)
+ 5:         c <- median(N)                            # robust centre (paper: medoid)
+ 6:         C <- 1/k * sum_{q in N} (q - c)(q - c)^T  # 3x3 structure tensor              (P1)
+ 7:         (l1 >= l2 >= l3), (e1, e2, e3) <- Eig(C)
+ 8:         L_i <- l_i / (l1 + l2 + l3)               # normalise against density changes
+ 9:         f += [l1+l2+l3, (L1 L2 L3)^(1/3), -sum L_i ln L_i, (L1-L3)/L1,
+10:               (L2-L3)/L1, (L1-L2)/L1, L3/(L1+L2+L3), L3/L1, 1-|e3_z|]
+11:         f += [sum <q-p,e1>, sum <q-p,e2>, sum <q-p,e1>^2, sum <q-p,e2>^2]    # moments  (P2)
+12:         (zmin, zmax) <- z-extent of level-s points with |q.xy - p.xy| <= r_s   (P2)
+13:         f += [zmax - zmin, p.z - zmin, zmax - p.z]                           # height   (P2)
+14:     return f                                      # 16 features x 9 scales = 144   (P3)
+
+Algorithm 3  Training and classification                          (notebook stage 3, P2)
+ 1: procedure Train(P, labels)
+ 2:     pyramid <- BuildPyramid(P)
+ 3:     S <- 1000 random points per class (seeded)    # balanced training set
+ 4:     X <- [PointFeatures(p, pyramid) for p in S];  y <- labels[S]
+ 5:     for each (trees, depth) in grid do            # grid search
+ 6:         score <- mean accuracy over 5-fold stratified cross-validation of RF(trees, depth, gini)
+ 7:     model <- RF(best trees, best depth) fitted on all (X, y)
+ 8:     return model, pyramid
+ 9:
+10: procedure Classify(model, pyramid, P)
+11:     for each chunk B of P do                      # features on the fly, never stored
+12:         X_B <- [PointFeatures(p, pyramid) for p in B]
+13:         y_B <- argmax_y model.P(y | X_B)
+14:     return all y_B
+
+Algorithm 4  Evaluation                                                    (notebook stage 3, P1/P3)
+ 1: for each class c: recall_c = TP/(TP+FN), precision_c = TP/(TP+FP), F1_c = 2PR/(P+R)
+ 2: OA = correct / all;  mean recall = mean_c recall_c;  mean F1 = mean_c F1_c
+ 3: Ablation: for each of the 16 feature types, drop its 9 columns, retrain, record drop in OA
